@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Electric Reporter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+    <style type="text/css">
+    .fas {
+        width: 16px;
+        height: 16px;
+        vertical-align: text-bottom;
+    }
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        padding: 48px 0 0;
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    }
+    .sidebar-sticky {
+        position: relative;
+        top: 0;
+        height: calc(100vh - 48px);
+        padding-top: .5rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    @supports ((position: -webkit-sticky) or (position: sticky)) {
+        .sidebar-sticky {
+            position: -webkit-sticky;
+            position: sticky;
+        }
+    }
+
+    .sidebar .nav-link {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .sidebar .nav-link .fas {
+        margin-right: 4px;
+        color: #999;
+    }
+
+    .sidebar .nav-link.active {
+        color: #007bff;
+    }
+
+    .sidebar .nav-link:hover .fas,
+    .sidebar .nav-link.active .fas {
+        color: inherit;
+    }
+
+    .sidebar-heading {
+        font-size: .75rem;
+        text-transform: uppercase;
+    }
+    </style>
+</head>
+
+<body>
+    <!-- Start NAV BAR -->
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-info">
+        <a class="navbar-brand" href="#"><i class="fas fa-bolt"></i></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto" id="mainNav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('index')}}">Home</a>
+                </li>
+                {% if sess.permission == 1 %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{url_for('settings')}}">Settings<span class="sr-only">(current)</span></a>
+                </li>
+                {% endif %}
+                <li class="nav-item d-block d-sm-block d-md-none" name="user">
+                    <a class="nav-link" data-toggle="tab" href="#home">
+                        User Management
+                    </a>
+                </li>
+                <li class="nav-item d-block d-sm-block d-md-none" name="iot">
+                    <a class="nav-link" data-toggle="tab" href="#menu1">
+                        IoT Management
+                    </a>
+                </li>
+            </ul>
+            <div class="btn-group">
+                <button type="button" class="btn btn-transparent" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                    {% if sess.permission == 1 %}
+                    <i class="fas fa-user-cog text-white"></i>
+                    {% else %}
+                    <i class="fas fa-user text-white"></i>
+                    {% endif %}
+                </button>
+                <div class="dropdown-menu dropdown-menu-left dropdown-menu-lg-right">
+                    <h6 class="dropdown-header">Welcome {{sess.username}}</h6>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{url_for('AUTH.logout')}}" class="dropdown-item" type="button">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- End NAV BAR -->
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column" id="pageNav">
+                        <li class="nav-item active">
+                            <a class="nav-link active" data-toggle="tab" href="#home" name="user">
+                                <i class="fas fa-users"></i>
+                                User Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#menu1" name="iot">
+                                <i class="fas fa-microchip"></i>
+                                IoT Management
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div class="tab-content">
+                    <div id="home" class="tab-pane in active mt-4">
+                        <button class="btn btn-success float-right mb-2">Add</button>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Permission</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{ user[0] }}</td>
+                                    <td>
+                                    <select class="custom-select">
+                                        {% if user[2] == 1 %}
+                                        <option value="1" selected>Admin</option>
+                                        <option value="0">User</option>
+                                        {% else %}
+                                        <option value="1">Admin</option>
+                                        <option value="0" selected>User</option>
+                                        {% endif %}
+                                    </select>                                                            
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="menu1" class="tab-pane">
+                        <h3>Menu 1</h3>
+                        <p>Some content in menu 1.</p>
+                    </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

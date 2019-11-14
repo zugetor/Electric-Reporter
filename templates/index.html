@@ -2,56 +2,302 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<title>Electric Reporter</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
-	<stype>
-		.dropdown-toggle a{ color: #555555; }
-	</stype>
+    <meta charset="UTF-8">
+    <title>Electric Reporter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+    <script src="https://npmcdn.com/chart.js@latest/dist/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/0.6.3/chartjs-plugin-zoom.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+    <style type="text/css">
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+
+    .card-header {
+        border: none;
+    }
+    </style>
 </head>
 
-<body>
-	<div class="container">
-		<!-- Start NAV BAR -->
-		<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-			<a class="navbar-brand" href="#"><i class="fas fa-bolt"></i></a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
-						<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-					</li>
-					{% if sess.permission == 1 %}
-						<li class="nav-item">
-							<a class="nav-link" href="#">Settings</a>
-						</li>
-					{% endif %}						
-				</ul>
-				<div class="btn-group">
-					<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
-						{% if sess.permission == 1 %}
-							<i class="fas fa-user-cog"></i>
-						{% else %}
-							<i class="fas fa-user"></i>
-						{% endif %}						
-					</button>
-					<div class="dropdown-menu dropdown-menu-left dropdown-menu-lg-right">
-						<h6 class="dropdown-header">Welcome {{sess.username}}</h6>
-						<div class="dropdown-divider"></div>
-						<a href="{{url_for('AUTH.logout')}}" class="dropdown-item" type="button">Logout</a>                    
-					</div>
-				</div>
-			</div>
-		</nav>
-		<!-- End NAV BAR -->
-	</div>
+<body class="bg-light">
+    <!-- Start NAV BAR -->
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-info">
+        <a class="navbar-brand" href="#"><i class="fas fa-bolt"></i></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{url_for('index')}}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                {% if sess.permission == 1 %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('settings')}}">Settings</a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="btn-group">
+                <button type="button" class="btn btn-transparent" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                    {% if sess.permission == 1 %}
+                    <i class="fas fa-user-cog text-white"></i>
+                    {% else %}
+                    <i class="fas fa-user text-white"></i>
+                    {% endif %}
+                </button>
+                <div class="dropdown-menu dropdown-menu-left dropdown-menu-lg-right">
+                    <h6 class="dropdown-header">Welcome {{sess.username}}</h6>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{url_for('AUTH.logout')}}" class="dropdown-item" type="button">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- End NAV BAR -->
+    <div class="container-fluid">
+        <div class="row pt-5">
+            <div class="col mb-4">
+                <div class="card shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Earnings (Monthly)</div>
+                                <div class="h5 mb-0 font-weight-bold">$40,000</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar fa-2x text-secondary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings (Monthly)</div>
+                                <div class="h5 mb-0 font-weight-bold">$40,000</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar fa-2x text-secondary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Earnings (Monthly)</div>
+                                <div class="h5 mb-0 font-weight-bold">$40,000</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar fa-2x text-secondary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col pt-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white">
+                        <h6 class="m-0 font-weight-bold text-info">Voltage</h6>
+                        <div class="dropdown no-arrow text-info">
+                            <div href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                <button class="dropdown-item" onclick="window.myLine.resetZoom()">Reset Zoom</button>
+                                <div class="dropdown-header">Export</div>
+                                <a class="dropdown-item" href="#"><i class="fas fa-file-csv"></i>&nbspCSV</a>
+                                <a class="dropdown-item" href="#"><i class="fab fa-js"></i>&nbspJSON</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="voltChart" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col pt-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white">
+                        <h6 class="m-0 font-weight-bold text-info">Ampere</h6>
+                        <div class="dropdown no-arrow">
+                            <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                <button class="dropdown-item" onclick="window.myLine2.resetZoom()">Reset Zoom</button>
+                                <div class="dropdown-header">Export</div>
+                                <a class="dropdown-item" href="#"><i class="fas fa-file-csv"></i>&nbspCSV</a>
+                                <a class="dropdown-item" href="#"><i class="fab fa-js"></i>&nbspJSON</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="ampChart" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col pt-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white">
+                        <h6 class="m-0 font-weight-bold  text-info">Watt</h6>
+                        <div class="dropdown no-arrow">
+                            <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                <button class="dropdown-item" onclick="window.myLine3.resetZoom()">Reset Zoom</button>
+                                <div class="dropdown-header">Export</div>
+                                <a class="dropdown-item" href="#"><i class="fas fa-file-csv"></i>&nbspCSV</a>
+                                <a class="dropdown-item" href="#"><i class="fab fa-js"></i>&nbspJSON</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="wattChart" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+<script type="text/javascript">
+var timeFormat = "MM/DD/YYYY HH:mm";
+
+function newDate(days) {
+    return moment()
+        .add(days, "d")
+        .toDate();
+}
+
+function newDateString(days) {
+    return moment()
+        .add(days, "d")
+        .format(timeFormat);
+}
+var config = {
+    type: "line",
+    data: {
+        labels: [
+            newDate(0),
+            newDate(1),
+            newDate(2),
+            newDate(3),
+            newDate(4),
+            newDate(5),
+            newDate(6)
+        ], // Date Objects
+        datasets: [{
+            label: "Dataset with point data",
+            data: [{
+                    x: newDateString(0),
+                    y: 1
+                },
+                {
+                    x: newDateString(5),
+                    y: 3
+                },
+                {
+                    x: newDateString(7),
+                    y: 5
+                },
+                {
+                    x: newDateString(15),
+                    y: 7
+                }
+            ],
+            fill: false
+        }]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: false
+        },
+        scales: {
+            xAxes: [{
+                type: "time",
+                time: {
+                    format: timeFormat,
+                    // round: 'day'
+                    tooltipFormat: "ll HH:mm"
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Date"
+                },
+                ticks: {
+                    maxRotation: 0
+                }
+            }],
+            yAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: "Value"
+                }
+            }]
+        },
+        pan: {
+            enabled: true,
+            mode: "x",
+            speed: 10,
+            threshold: 10
+        },
+        zoom: {
+            enabled: true,
+            drag: false,
+            mode: "xy",
+            limits: {
+                max: 10,
+                min: 0.5
+            }
+        }
+    }
+};
+config.data.datasets.forEach(function(dataset) {
+    dataset.borderColor = "rgba(7,77,152,0.4)";
+    dataset.backgroundColor = "rgba(208,35,43,0.8)";
+    dataset.pointBorderColor = "rgba(0,170,255,1)";
+    dataset.pointBackgroundColor = "rgba(0,170,255,1)";
+    dataset.pointBorderWidth = 1;
+});
+$(document).ready(function() {
+    var ctx = document.getElementById("voltChart").getContext("2d");
+    window.myLine = new Chart(ctx, config);
+    var ctx2 = document.getElementById("ampChart").getContext("2d");
+    window.myLine2 = new Chart(ctx2, config);
+    var ctx3 = document.getElementById("wattChart").getContext("2d");
+    window.myLine3 = new Chart(ctx3, config);
+});
+</script>
 
 </html>

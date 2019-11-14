@@ -36,14 +36,19 @@ def close_connection(exception):
 	if db is not None:
 		db.close()
 
-
 @app.route("/")
 def index():
 	if 'username' in session:
+		return render_template("index.html", sess=session)
+	return redirect(url_for('AUTH.login'))
+
+@app.route("/settings")
+def settings():
+	if 'username' in session and session['permission'] == 1:
 		cur = get_db().cursor()
 		res = cur.execute("select * from users")
-		return render_template("index.html", sess=session, users=res)
-	return redirect(url_for('AUTH.login'))
+		return render_template("settings.html", sess=session, users=res)
+	return redirect(url_for('index'))
 
 
 if __name__ == "__main__":

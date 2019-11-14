@@ -16,9 +16,9 @@ def login():
 			session['permission'] = user.getUser(username)[2]
 			return redirect(url_for('index'))
 		else:
-			return redirect(url_for('AUTH.login'))
+			return render_template("login.html",user=username)
 	
-	return render_template("login.html")
+	return render_template("login.html",user="")
 
 @app.route('/logout')
 def logout():

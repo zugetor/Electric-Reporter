@@ -22,6 +22,8 @@ def validate(username, password):
 		cur = con.cursor()
 		cur.execute("select * from users WHERE username = ?",(username,))
 		row = cur.fetchone()
+		if(row is None):
+			return False
 		dbUser = row[0]
 		dbPass = row[1]
 		if dbUser == username:
