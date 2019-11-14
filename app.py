@@ -1,7 +1,7 @@
 from flask import Flask, g, render_template, session, redirect, url_for, escape, request, jsonify
-import sqlite3
-import os
+import sqlite3, os
 import user
+from route import auth
 
 DATABASE = "./database.db"
 
@@ -9,6 +9,7 @@ DATABASE = "./database.db"
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'super-secret'
+app.register_blueprint(auth.app)
 
 # check if the database exist, if not create the table and insert a few lines of data
 if not os.path.exists(DATABASE):
@@ -41,45 +42,10 @@ def index():
 	if 'username' in session:
 		cur = get_db().cursor()
 		res = cur.execute("select * from users")
-		return render_template("index.html", users=res, curUser=session['username'],permission=session['permission'])
-	return redirect(url_for('login'))
-	
-	
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	if 'username' in session:
-		return redirect(url_for('index'))
-	
-	if request.method == 'POST':
-		username = request.form['username']
-		pwd = request.form['password']		
-		if(user.validate(username,pwd)):
-			session['username'] = username
-			session['permission'] = user.getUser(username)[2]
-			return redirect(url_for('index'))
-		else:
-			return redirect(url_for('login'))
-	
-	return '''
-		<form method="post">
-			<p><input type=text name=username>
-			<p><input type=text name=password>
-			<p><input type=submit value=Login>
-		</form>
-	'''
-
-@app.route('/logout')
-def logout():
-	# remove the username from the session if it's there
-	session.pop('username', None)
-	return redirect(url_for('index'))
+		return render_template("index.html", sess=session, users=res)
+	return redirect(url_for('AUTH.login'))
 
 
 if __name__ == "__main__":
-	"""
-	Use python sqlite3 to create a local database, insert some basic data and then
-	display the data using the flask templating.
-	
-	http://flask.pocoo.org/docs/0.12/patterns/sqlite3/
-	"""
+	print(app.url_map)
 	app.run()
