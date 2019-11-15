@@ -17,7 +17,6 @@ def register(username, password, permission=0):
 def validate(username, password):
 	con = sqlite3.connect(DATABASE)
 	completion = False
-	print("OK")
 	with con:
 		cur = con.cursor()
 		cur.execute("select * from users WHERE username = ?",(username,))
@@ -36,6 +35,24 @@ def getUser(username):
 		cur = con.cursor()
 		cur.execute("select * from users WHERE username = ?",(username,))
 		return cur.fetchone()
+
+def setUserPermission(username, permission):
+	con = sqlite3.connect(DATABASE)
+	completion = False
+	with con:
+		cur = con.cursor()
+		cur.execute("UPDATE users SET permission = ? WHERE username = ?",(permission,username))
+		completion = True
+	return completion	
+
+def delUser(username):
+	con = sqlite3.connect(DATABASE)
+	completion = False
+	with con:
+		cur = con.cursor()
+		cur.execute("DELETE from users WHERE username = ?",(username,))
+		completion = True	
+	return completion
 	
 def _check_password(hashed_password, user_password):
 	return hashed_password == encrypt(user_password)
