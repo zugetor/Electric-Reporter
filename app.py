@@ -1,7 +1,7 @@
 from flask import Flask, g, render_template, session, redirect, url_for, escape, request, jsonify
 import sqlite3, os
-import user
-from route import auth, admin
+import user, node
+from route import auth, admin, nodeApi, campus, building, room
 
 DATABASE = "./database.db"
 
@@ -11,6 +11,10 @@ app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'super-secret'
 app.register_blueprint(auth.app)
 app.register_blueprint(admin.app, url_prefix="/admin")
+app.register_blueprint(nodeApi.app, url_prefix="/api/node")
+app.register_blueprint(campus.api,url_prefix="/api/campus")
+app.register_blueprint(building.api,url_prefix="/api/building")
+app.register_blueprint(room.api,url_prefix="/api/room")
 
 # check if the database exist, if not create the table and insert a few lines of data
 if not os.path.exists(DATABASE):
@@ -18,7 +22,7 @@ if not os.path.exists(DATABASE):
 	cur = conn.cursor()
 	cur.execute("CREATE TABLE users (username TEXT, password TEXT, permission INTEGER);")
 	cur.execute("CREATE TABLE log (nodeId TEXT, volt FLOAT, amp FLOAT, watt FLOAT);")
-	cur.execute("CREATE TABLE config (nodeId TEXT, building TEXT, room TEXT);")
+	cur.execute("CREATE TABLE config (nodeId TEXT, campus INTEGER, building TEXT, room TEXT);")
 	conn.commit()
 	user.register("admin","admin",1)
 	user.register("user","user")
@@ -60,7 +64,8 @@ def settings():
 			return redirect(url_for('AUTH.login'))
 		cur = get_db().cursor()
 		res = cur.execute("select * from users")
-		return render_template("settings.html", sess=session, users=res)
+		allnode = node.getAllNode()
+		return render_template("settings.html", sess=session, users=res, nodes=allnode)
 	return redirect(url_for('index'))
 
 

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, session, request, redirect, url_for, render_template
-import user
+import user, node
 
 app = Blueprint('ADMIN', __name__)
 
@@ -11,7 +11,7 @@ def register():
 			if(not sess_user or (sess_user and sess_user[2] != session['permission'])):
 				session.pop('username', None)
 				session.pop('permission', None)
-				return redirect(url_for('AUTH.login'))
+				return redirect(url_for('AUTH.login'))		
 			if("username" not in request.form or "password" not in request.form):
 				return redirect(url_for('settings'))
 			username = request.form['username']
@@ -24,6 +24,28 @@ def register():
 	except Exception:
 		return redirect(url_for('index'))
 
+@app.route('/config')
+def config():
+	try:
+		if 'username' in session and session['permission'] == 1:
+			sess_user = user.getUser(session["username"])
+			if(not sess_user or (sess_user and sess_user[2] != session['permission'])):
+				session.pop('username', None)
+				session.pop('permission', None)
+				return redirect(url_for('AUTH.login'))
+			id = request.args.get("id")
+			campus = request.args.get("campus")
+			building = request.args.get("building")
+			room = request.args.get("room")
+			if(id is None or campus is None or building is None or room is None):
+				return redirect(url_for('settings'))
+			node.updateConfig(id, campus, building, room)
+			return redirect(url_for('settings'))
+		else:
+			return redirect(url_for('index'))
+	except Exception:
+		return redirect(url_for('index'))
+			
 @app.route('/permission')
 def permission():
 	try:

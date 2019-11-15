@@ -42,6 +42,7 @@ def setUserPermission(username, permission):
 	with con:
 		cur = con.cursor()
 		cur.execute("UPDATE users SET permission = ? WHERE username = ?",(permission,username))
+		con.commit()
 		completion = True
 	return completion	
 
@@ -51,6 +52,7 @@ def delUser(username):
 	with con:
 		cur = con.cursor()
 		cur.execute("DELETE from users WHERE username = ?",(username,))
+		con.commit()
 		completion = True	
 	return completion
 	
