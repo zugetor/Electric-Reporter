@@ -21,7 +21,8 @@ if not os.path.exists(DATABASE):
 	conn = sqlite3.connect(DATABASE)
 	cur = conn.cursor()
 	cur.execute("CREATE TABLE users (username TEXT, password TEXT, permission INTEGER);")
-	cur.execute("CREATE TABLE log (nodeId TEXT, volt FLOAT, amp FLOAT, watt FLOAT);")
+	cur.execute("CREATE TABLE log (nodeId TEXT, volt FLOAT, amp FLOAT, watt , ts INTEGER);")
+	cur.execute("CREATE TABLE report (nodeId TEXT, message TEXT, ts INTEGER);")
 	cur.execute("CREATE TABLE config (nodeId TEXT, campus INTEGER, building TEXT, room TEXT);")
 	conn.commit()
 	user.register("admin","admin",1)
@@ -65,7 +66,8 @@ def settings():
 		cur = get_db().cursor()
 		res = cur.execute("select * from users")
 		allnode = node.getAllNode()
-		return render_template("settings.html", sess=session, users=res, nodes=allnode)
+		report = node.getRoom_report()
+		return render_template("settings.html", sess=session, users=res, nodes=allnode, reports=report)
 	return redirect(url_for('index'))
 
 

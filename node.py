@@ -1,3 +1,4 @@
+from time import time
 import sqlite3
 from buu import Room
 
@@ -24,6 +25,18 @@ def updateConfig(id,campus,building,room):
 		cur.execute("UPDATE config SET campus = ? , building = ? , room = ? WHERE nodeId = ?",(campus,building,room,id))
 		con.commit()
 		completion = True
+	return completion
+
+def delete(id):
+	con = sqlite3.connect(DATABASE)
+	completion = False
+	with con:
+		cur = con.cursor()
+		cur.execute("DELETE from config WHERE nodeId = ?",(id,))
+		con.commit()
+		cur.execute("DELETE from log WHERE nodeId = ?",(id,))
+		con.commit()
+		completion = True
 	return completion	
 
 def getAllNode():
@@ -47,10 +60,39 @@ def report(id,volt,amp,watt):
 		cur = con.cursor()
 		if(getNode(id) is not None):
 			cur = con.cursor()
-			cur.execute("INSERT INTO log VALUES(?,?,?,?)",(id,volt,amp,watt))
+			cur.execute("INSERT INTO log VALUES(?,?,?,?,?)",(id,volt,amp,watt,int(time())))
 			con.commit()
 			completion = True
 	return completion
+
+def room_report(id,message):
+	con = sqlite3.connect(DATABASE)
+	completion = False
+	with con:
+		cur = con.cursor()
+		if(getNode(id) is not None):
+			cur = con.cursor()
+			cur.execute("INSERT INTO report VALUES(?,?,?)",(id,message,int(time())))
+			con.commit()
+			completion = True
+	return completion
+
+def getRoom_report():
+	con = sqlite3.connect(DATABASE)
+	with con:
+		cur = con.cursor()
+		cur.execute("select * from report")
+		return cur.fetchall()
+
+def deleteRoom_report(id,subject):
+	con = sqlite3.connect(DATABASE)
+	completion = False
+	with con:
+		cur = con.cursor()
+		cur.execute("DELETE from report WHERE nodeId = ? AND message = ?",(id,subject))
+		con.commit()
+		completion = True
+	return completion	
 
 def getSchedule(id):
 	completion = False

@@ -131,6 +131,12 @@
                                 IoT Management
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#menu2" name="report">
+                                <i class="fas fas1 fa-file"></i>
+                                Report
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -221,7 +227,35 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <a class="btn btn-danger" href="{{url_for('ADMIN.delete')}}?id={{ node[0] }}">Delete</a>
+                                        <a class="btn btn-danger" href="{{url_for('NODE.delete')}}?id={{ node[0] }}">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="menu2" class="tab-pane mt-2">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Node ID</th>
+                                    <th scope="col">Subject</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for report in reports %}
+                                <tr>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{report[0]}}</td>
+                                    <td>
+                                        <input type="text" class="form-control" value="{{report[1]}}" disabled="">
+                                    </td>
+                                    <td name="ts">{{report[2]}}</td>
+                                    <td>
+                                        <a class="btn btn-danger text-white" href="{{url_for('NODE.del_report')}}?id={{ report[0] }}&message={{report[1]}}">Delete</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -266,15 +300,26 @@ $(document).ready(function() {
     $("#mainNav").click(function() {
         $("#mainNav").find(".active").removeClass("active");
     });
+    var promises = [];
     let row = $("#menu1 th[scope='row']")
-    for(let i = 1;i<=row.length;i++){
-        let select = $('[name ="campus"][index="'+i+'"]').find("option:selected").text();
+    for (let i = 1; i <= row.length; i++) {
+        let select = $('[name ="campus"][index="' + i + '"]').find("option:selected").text();      
         if (select != 'None') {
-            campusChange("[name ='campus'][index='"+i+"']");
-            buildingChange("[name ='building'][index='"+i+"']");
+            campusChange("[name ='campus'][index='" + i + "']");
+            var ajax = buildingChange("[name ='building'][index='" + i + "']");
         }
-    }    
+    }
+    $("[name='ts']").each(function(){
+        let ts = $(this).html()
+        $(this).html(toDate(ts))
+    });
 });
+
+toDate = function(unixtimestamp){
+    var dt=eval(unixtimestamp*1000);
+    var myDate = new Date(dt);
+    return myDate.toLocaleString("en-GB",{ hour12: true });
+}
 permission = function(username, e) {
     $.get("{{url_for('ADMIN.permission')}}", { username: username, permission: $(e).val() })
         .done(function(data) {
@@ -287,16 +332,16 @@ campusChange = function(e) {
         return
     }
     let index = $(e).attr('index');
-    let oldval = $("[name ='building'][index ='"+index+"'] > option:selected").val()
+    let oldval = $("[name ='building'][index ='" + index + "'] > option:selected").val()
     $.get("{{url_for('BuildingAPI.index')}}")
         .done(function(data) {
-            $("[name ='building'][index ='"+index+"']").html("");
+            $("[name ='building'][index ='" + index + "']").html("");
             for (let i = 0; i < data[select].length; i++) {
                 let selected = "";
-                if(oldval == data[select][i]['building']){
+                if (oldval == data[select][i]['building']) {
                     selected = "selected";
                 }
-                $("[name ='building'][index ='"+index+"']").append('<option '+selected+' value="' + data[select][i]['building'] + '">' + data[select][i]['name'] + " - " + data[select][i]['building'] + '</option>');
+                $("[name ='building'][index ='" + index + "']").append('<option ' + selected + ' value="' + data[select][i]['building'] + '">' + data[select][i]['name'] + " - " + data[select][i]['building'] + '</option>');
             }
         });
 }
@@ -306,39 +351,39 @@ buildingChange = function(e) {
         return
     }
     let index = $(e).attr('index');
-    let campusId = $("[name ='campus'][index ='"+index+"'] > option:selected").val()
-    let building = $("[name ='building'][index ='"+index+"'] > option:selected").val()
+    let campusId = $("[name ='campus'][index ='" + index + "'] > option:selected").val()
+    let building = $("[name ='building'][index ='" + index + "'] > option:selected").val()
 
-    let oldval = $("[name ='room'][index ='"+index+"'] > option:selected")
+    let oldval = $("[name ='room'][index ='" + index + "'] > option:selected")
     $.get("{{url_for('RoomAPI.index')}}", { campus: campusId, building: building })
         .done(function(data) {
-            let index2 = $('[name =\'room\'][index ="'+index+'"] :selected').index()
-            let selected = $('[name =\'room\'][index ="'+index+'"]').children()[index2]
-            if(oldval.val() == 'None'){
-                $("[name ='room'][index ='"+index+"']").html("<option value=\"None\" selected=\"\">None</option>")
-            }else{
-                if($(selected).val() != $(selected).html()){
-                    $("[name ='room'][index ='"+index+"']").html(selected)
-                }else{
-                    $("[name ='room'][index ='"+index+"']").html("")
+            let index2 = $('[name =\'room\'][index ="' + index + '"] :selected').index()
+            let selected = $('[name =\'room\'][index ="' + index + '"]').children()[index2]
+            if (oldval.val() == 'None') {
+                $("[name ='room'][index ='" + index + "']").html("<option value=\"None\" selected=\"\">None</option>")
+            } else {
+                if ($(selected).val() != $(selected).html()) {
+                    $("[name ='room'][index ='" + index + "']").html(selected)
+                } else {
+                    $("[name ='room'][index ='" + index + "']").html("")
                 }
             }
             for (let i = 0; i < data.length; i++) {
                 let selected = ""
-                if(oldval.val() == data[i]['roomid']){
+                if (oldval.val() == data[i]['roomid']) {
                     selected = "selected"
                 }
-                $("[name ='room'][index ='"+index+"']").append('<option '+selected+' value="' + data[i]['roomid'] + '">' + data[i]['name'] + '</option>');
+                $("[name ='room'][index ='" + index + "']").append('<option ' + selected + ' value="' + data[i]['roomid'] + '">' + data[i]['name'] + '</option>');
             }
         });
 }
-sendconfig = function(id,e) {
+sendconfig = function(id, e) {
     let index = $(e).attr('index');
-    let campusId = $("[name ='campus'][index ='"+index+"'] > option:selected").text()
-    let building = $("[name ='building'][index ='"+index+"'] > option:selected").val()
+    let campusId = $("[name ='campus'][index ='" + index + "'] > option:selected").text()
+    let building = $("[name ='building'][index ='" + index + "'] > option:selected").val()
     let room = $(e).find("option:selected").val()
     if (campusId != 'None' && building != 'None' && room != 'None') {
-        $.get("{{url_for('ADMIN.config')}}", { id: id,campus: campusId, building: building, room: room })
+        $.get("{{url_for('ADMIN.config')}}", { id: id, campus: campusId, building: building, room: room })
             .done(function(data) {
                 location.reload();
             });
