@@ -15,8 +15,10 @@ def index():
 			return jsonify({"error":"campus should not be null"}), 400
 		if(bc is None):
 			return jsonify({"error":"building should not be null"}), 400
-		res = room.getAll(campusid,bc)
-		return jsonify(res)
+		res = jsonify(room.getAll(campusid,bc))
+		res.cache_control.max_age = 604800
+		res.headers.add('Access-Control-Allow-Origin', '*')
+		return res
 	except Exception as e:
 		return jsonify({"error": str(e)}), 500
 
@@ -31,7 +33,9 @@ def schedule():
 			return jsonify({"error":"campus should not be null"}), 400
 		if(roomid is None):
 			return jsonify({"error":"room should not be null"}), 400
-		res = room.getSchedule(campusid, roomid)
-		return jsonify(res)
+		res = jsonify(room.getSchedule(campusid, roomid))
+		res.cache_control.max_age = 3600
+		res.headers.add('Access-Control-Allow-Origin', '*')
+		return res
 	except Exception as e:
 		return jsonify({"error": str(e)}), 500

@@ -5,4 +5,7 @@ api = Blueprint('CampusAPI', __name__)
 
 @api.route("/")
 def index():
-	return jsonify(Campus.getAll())
+	res = jsonify(Campus.getAll())
+	res.cache_control.max_age = 604800
+	res.headers.add('Access-Control-Allow-Origin', '*')
+	return res

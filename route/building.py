@@ -7,6 +7,9 @@ building = Building()
 @api.route("/")
 def index():
 	try:
-		return jsonify(building.getAll())
+		res = jsonify(building.getAll())
+		res.cache_control.max_age = 604800
+		res.headers.add('Access-Control-Allow-Origin', '*')
+		return res
 	except Exception as e:
 		return jsonify({"error": str(e)}), 500
