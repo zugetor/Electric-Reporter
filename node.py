@@ -102,3 +102,10 @@ def getSchedule(id):
 		res = room.getSchedule(campus[config[1]], config[3])
 		return res
 	return completion
+
+def getlog(id):
+	con = sqlite3.connect(DATABASE)
+	with con:
+		cur = con.cursor()
+		cur.execute("SELECT * from log WHERE nodeId = ?",(id,))
+		return cur.fetchall()

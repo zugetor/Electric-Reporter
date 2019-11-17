@@ -21,7 +21,7 @@ if not os.path.exists(DATABASE):
 	conn = sqlite3.connect(DATABASE)
 	cur = conn.cursor()
 	cur.execute("CREATE TABLE users (username TEXT, password TEXT, permission INTEGER);")
-	cur.execute("CREATE TABLE log (nodeId TEXT, volt FLOAT, amp FLOAT, watt , ts INTEGER);")
+	cur.execute("CREATE TABLE log (nodeId TEXT, volt FLOAT, amp FLOAT, watt FLOAT, ts INTEGER);")
 	cur.execute("CREATE TABLE report (nodeId TEXT, message TEXT, ts INTEGER);")
 	cur.execute("CREATE TABLE config (nodeId TEXT, campus INTEGER, building TEXT, room TEXT);")
 	conn.commit()
@@ -52,7 +52,8 @@ def index():
 			session.pop('username', None)
 			session.pop('permission', None)
 			return redirect(url_for('AUTH.login'))
-		return render_template("index.html", sess=session)
+		allnode = node.getAllNode()
+		return render_template("index.html", sess=session, nodes=allnode)
 	return redirect(url_for('AUTH.login'))
 
 @app.route("/settings")

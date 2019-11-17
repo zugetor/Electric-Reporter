@@ -2,4 +2,5 @@ requests
 beautifulsoup4
 flask
 requests_cache
+lxml
 waitress

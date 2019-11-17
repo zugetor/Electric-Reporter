@@ -1,15 +1,24 @@
-# Flask-SQLite3-Example
+Electric Reporter
+================
 
-## Description
-Simple application using python SQLite3 database with html templating.
+A Python Electric Reporter using Flask
 
-## Setup
-Install the requirements
-```sh
-python -m pip install Flask
+Requirements
+----------
+
+* Python 3
+
+Quick Start
+----------
+Installing necessary packages
 ```
-
-## Run
-```sh
+pip install -r requirements.txt 
+```
+Run server with Waitress
+```
+python server.py
+```
+Run server with flask
+```
 python app.py
 ```

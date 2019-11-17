@@ -300,7 +300,6 @@ $(document).ready(function() {
     $("#mainNav").click(function() {
         $("#mainNav").find(".active").removeClass("active");
     });
-    var promises = [];
     let row = $("#menu1 th[scope='row']")
     for (let i = 1; i <= row.length; i++) {
         let select = $('[name ="campus"][index="' + i + '"]').find("option:selected").text();      

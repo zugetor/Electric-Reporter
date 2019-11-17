@@ -6,7 +6,7 @@
     <title>Electric Reporter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
@@ -15,6 +15,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/0.6.3/chartjs-plugin-zoom.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <style type="text/css">
     canvas {
         -moz-user-select: none;
@@ -26,6 +28,8 @@
         border: none;
     }
     </style>
+    <script type="text/javascript">
+    </script>
 </head>
 
 <body class="bg-light">
@@ -64,53 +68,6 @@
     </nav>
     <!-- End NAV BAR -->
     <div class="container-fluid">
-        <div class="row pt-5">
-            <div class="col mb-4">
-                <div class="card shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Earnings (Monthly)</div>
-                                <div class="h5 mb-0 font-weight-bold">$40,000</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-secondary"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-4">
-                <div class="card shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings (Monthly)</div>
-                                <div class="h5 mb-0 font-weight-bold">$40,000</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-secondary"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-4">
-                <div class="card shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Earnings (Monthly)</div>
-                                <div class="h5 mb-0 font-weight-bold">$40,000</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-secondary"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col pt-5">
                 <div class="card shadow mb-4">
@@ -124,8 +81,8 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                 <button class="dropdown-item" onclick="window.myLine.resetZoom()">Reset Zoom</button>
                                 <div class="dropdown-header">Export</div>
-                                <a class="dropdown-item" href="#"><i class="fas fa-file-csv"></i>&nbspCSV</a>
-                                <a class="dropdown-item" href="#"><i class="fab fa-js"></i>&nbspJSON</a>
+                                <button class="dropdown-item" onclick="downloadCSV('volt')"><i class="fas fa-file-csv"></i>&nbspCSV</button>
+                                <button class="dropdown-item" onclick="downloadJSON('volt')"><i class="fab fa-js"></i>&nbspJSON</button>
                             </div>
                         </div>
                     </div>
@@ -149,8 +106,8 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                 <button class="dropdown-item" onclick="window.myLine2.resetZoom()">Reset Zoom</button>
                                 <div class="dropdown-header">Export</div>
-                                <a class="dropdown-item" href="#"><i class="fas fa-file-csv"></i>&nbspCSV</a>
-                                <a class="dropdown-item" href="#"><i class="fab fa-js"></i>&nbspJSON</a>
+                                <button class="dropdown-item" onclick="downloadCSV('amp')"><i class="fas fa-file-csv"></i>&nbspCSV</button>
+                                <button class="dropdown-item" onclick="downloadJSON('amp')"><i class="fab fa-js"></i>&nbspJSON</button>
                             </div>
                         </div>
                     </div>
@@ -174,8 +131,8 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                 <button class="dropdown-item" onclick="window.myLine3.resetZoom()">Reset Zoom</button>
                                 <div class="dropdown-header">Export</div>
-                                <a class="dropdown-item" href="#"><i class="fas fa-file-csv"></i>&nbspCSV</a>
-                                <a class="dropdown-item" href="#"><i class="fab fa-js"></i>&nbspJSON</a>
+                                <button class="dropdown-item" onclick="downloadCSV('watt')"><i class="fas fa-file-csv"></i>&nbspCSV</button>
+                                <button class="dropdown-item" onclick="downloadJSON('watt')"><i class="fab fa-js"></i>&nbspJSON</button>
                             </div>
                         </div>
                     </div>
@@ -188,115 +145,218 @@
                 </div>
             </div>
         </div>
+        <div class="row pt-5">
+            <div class="col mb-4">
+                <div class="card shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Node ID</div>
+                                <div class="h5 mb-0 font-weight-bold">
+                                    <div class="form-group">
+                                        <select class="form-control" id="node">
+                                            <option selected="">Choose</option>
+                                            {% for node in nodes %}
+                                            <option value="{{node[0]}}">{{node[0]}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Start Date</div>
+                                <div class="h5 mb-0 font-weight-bold">
+                                    <input class="form-control" id="startdate" data-date-format="dd/mm/yyyy" data-date-end-date="0d">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">End Date</div>
+                                <div class="h5 mb-0 font-weight-bold">
+                                    <input class="form-control" id="enddate" data-date-format="dd/mm/yyyy" data-date-end-date="0d">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 <script type="text/javascript">
-var timeFormat = "MM/DD/YYYY HH:mm";
-
-function newDate(days) {
-    return moment()
-        .add(days, "d")
-        .toDate();
+$('#startdate').datepicker({
+    autoclose: true,
+    immediateUpdates: true,
+    todayBtn: true,
+    todayHighlight: true
+}).datepicker("setDate", "0");
+$('#enddate').datepicker({
+    autoclose: true,
+    immediateUpdates: true,
+    todayBtn: true,
+    todayHighlight: true
+}).datepicker("setDate", "0");
+var toDate = function(unixtimestamp) {
+    var dt = eval(unixtimestamp * 1000);
+    var myDate = new Date(dt);
+    return myDate.toLocaleString("en-GB");
 }
-
-function newDateString(days) {
-    return moment()
-        .add(days, "d")
-        .format(timeFormat);
-}
-var config = {
-    type: "line",
-    data: {
-        labels: [
-            newDate(0),
-            newDate(1),
-            newDate(2),
-            newDate(3),
-            newDate(4),
-            newDate(5),
-            newDate(6)
-        ], // Date Objects
-        datasets: [{
-            label: "Dataset with point data",
-            data: [{
-                    x: newDateString(0),
-                    y: 1
-                },
-                {
-                    x: newDateString(5),
-                    y: 3
-                },
-                {
-                    x: newDateString(7),
-                    y: 5
-                },
-                {
-                    x: newDateString(15),
-                    y: 7
-                }
-            ],
-            fill: false
-        }]
-    },
-    options: {
-        responsive: true,
-        title: {
-            display: false
-        },
-        scales: {
-            xAxes: [{
-                type: "time",
-                time: {
-                    format: timeFormat,
-                    // round: 'day'
-                    tooltipFormat: "ll HH:mm"
-                },
-                scaleLabel: {
-                    display: true,
-                    labelString: "Date"
-                },
-                ticks: {
-                    maxRotation: 0
-                }
-            }],
-            yAxes: [{
-                scaleLabel: {
-                    display: true,
-                    labelString: "Value"
-                }
+var makeConfig = function(label, data) {
+    var config = {
+        type: "line",
+        data: {
+            datasets: [{
+                label: label,
+                data: data,
+                fill: false
             }]
         },
-        pan: {
-            enabled: true,
-            mode: "x",
-            speed: 10,
-            threshold: 10
-        },
-        zoom: {
-            enabled: true,
-            drag: false,
-            mode: "xy",
-            limits: {
-                max: 10,
-                min: 0.5
+        options: {
+            responsive: true,
+            title: {
+                display: false
+            },
+            scales: {
+                xAxes: [{
+                    type: "time",
+                    time: {
+                        format: "DD/MM/YYYY, HH:mm",
+                        // round: 'day'
+                        tooltipFormat: "ll HH:mm"
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Date"
+                    },
+                    ticks: {
+                        maxRotation: 0
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Value"
+                    }
+                }]
+            },
+            pan: {
+                enabled: true,
+                mode: "xy",
+                speed: 10,
+                threshold: 10
+            },
+            zoom: {
+                enabled: true,
+                drag: false,
+                mode: "xy",
+                limits: {
+                    max: 10,
+                    min: 0.5
+                }
             }
         }
+    };
+    config.data.datasets.forEach(function(dataset) {
+        dataset.borderColor = "rgba(7,77,152,0.4)";
+        dataset.backgroundColor = "rgba(208,35,43,0.8)";
+        dataset.pointBorderColor = "rgba(0,170,255,1)";
+        dataset.pointBackgroundColor = "rgba(0,170,255,1)";
+        dataset.pointBorderWidth = 1;
+    });
+    return config
+}
+
+var downloadWithName = function(uri, name) {
+    let link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    link.click();
+}
+
+var log = { volt: [], amp: [], watt: [] }
+var getData = function() {
+    let node = $("#node option:selected").val()
+    let startdate = moment($("#startdate").val(), "DD/MM/YYYY").unix();
+    let enddate = moment($("#enddate").val(), "DD/MM/YYYY").add(23, 'hours').add(59, 'minutes').add(59, 'seconds').unix();
+    if (node != "Choose") {
+        $.get("{{url_for('NODE.log')}}", { id: node })
+            .done(function(data) {
+                log = { volt: [], amp: [], watt: [] }
+                let chartVolt = []
+                let chartAmp = []
+                let chartWatt = []
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i][4] >= startdate && data[i][4] <= enddate) {
+                        let date = toDate(data[i][4])
+                        log["volt"].push({ date: date, value: data[i][1] })
+                        chartVolt.push({ x: date, y: data[i][1] })
+                        log["amp"].push({ date: date, value: data[i][2] })
+                        chartAmp.push({ x: date, y: data[i][2] })
+                        log["watt"].push({ date: date, value: data[i][3] })
+                        chartWatt.push({ x: date, y: data[i][3] })
+                    }
+                }
+                let graph = makeConfig("Volt", chartVolt)
+                let graph1 = makeConfig("Amp", chartAmp)
+                let graph2 = makeConfig("Watt", chartWatt)
+                var ctx = document.getElementById("voltChart").getContext("2d");
+                window.myLine = new Chart(ctx, graph);
+                var ctx2 = document.getElementById("ampChart").getContext("2d");
+                window.myLine2 = new Chart(ctx2, graph1);
+                var ctx3 = document.getElementById("wattChart").getContext("2d");
+                window.myLine3 = new Chart(ctx3, graph2);
+            });
     }
-};
-config.data.datasets.forEach(function(dataset) {
-    dataset.borderColor = "rgba(7,77,152,0.4)";
-    dataset.backgroundColor = "rgba(208,35,43,0.8)";
-    dataset.pointBorderColor = "rgba(0,170,255,1)";
-    dataset.pointBackgroundColor = "rgba(0,170,255,1)";
-    dataset.pointBorderWidth = 1;
-});
+}
+
+downloadCSV = function(val) {
+    let raw = log[val]
+    let content = "date,value\n"
+    for (let i = 0; i < raw.length; i++) {
+		content += raw[i]["date"].replace(",","") + "," + raw[i]["value"] + "\n"
+    }
+    downloadWithName("data:text/csv;charset=utf-8," + encodeURIComponent(content), val + ".csv")
+}
+downloadJSON = function(val) {
+    let raw = log[val]
+    downloadWithName("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(raw,null,2)), val + ".json")
+}
+
 $(document).ready(function() {
+    let graph = makeConfig("Volt", [])
+    let graph1 = makeConfig("Amp", [])
+    let graph2 = makeConfig("Watt", [])
     var ctx = document.getElementById("voltChart").getContext("2d");
-    window.myLine = new Chart(ctx, config);
+    window.myLine = new Chart(ctx, graph);
     var ctx2 = document.getElementById("ampChart").getContext("2d");
-    window.myLine2 = new Chart(ctx2, config);
+    window.myLine2 = new Chart(ctx2, graph1);
     var ctx3 = document.getElementById("wattChart").getContext("2d");
-    window.myLine3 = new Chart(ctx3, config);
+    window.myLine3 = new Chart(ctx3, graph2);
+    getData()
+    $("#node").change(function() {
+        getData()
+    })
+    $("#startdate").change(function() {
+        getData()
+    })
+    $("#enddate").change(function() {
+        getData()
+    })
 });
 </script>
 
