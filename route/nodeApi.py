@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, session, request, redirect, url_for, render_template
 import node
+import datetime, time
 
 app = Blueprint('NODE', __name__)
 
@@ -106,17 +107,37 @@ def report():
 @app.route('/schedule')
 def schedule():
 	try:
-		id = request.args.get("id")
-		schedule = node.getSchedule(id)
-		if(id is None and schedule is None):
-			return jsonify({"status":False,"error":"id and schedule should not be null"}), 400
+		id = request.args.get("id")	
+		raw = node.getSchedule(id)	
+		if(id is None and raw is None):
+			return jsonify({"status":False,"error":"id and room should not be null"}), 400
 		if(id is None):
 			return jsonify({"status":False,"error":"id should not be null"}), 400
-		if(schedule is None):
-			return jsonify({"status":False,"error":"schedule should not be null"}), 400
-		if schedule:
-			schedule['status'] = True
-			return jsonify(schedule)
+		if(raw is None):
+			return jsonify({"status":False,"error":"room should not be null"}), 400		
+		if raw:
+			day = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+			day = day[datetime.datetime.now().weekday()]
+			hour = datetime.datetime.now().hour
+			if(day in raw.keys()):
+				schedule = raw[day]
+				index = -1
+				for i, item in enumerate(schedule):
+					if(item["start_time"] >= hour and hour <= item["end_time"]):
+						index = i
+						break
+				time_table = []
+				if(index > -1):				
+					time_table.append(schedule[i])
+					if(index < len(schedule)-2):
+						time_table.append(schedule[i+1])
+				else:
+					res = jsonify({"status":False})
+					return res
+				res = jsonify({"status":False,"data":time_table})
+				return res
+			else:
+				return jsonify({"status":False}), 400
 		else:
 			return jsonify({"status":False}), 500
 	except Exception as e:

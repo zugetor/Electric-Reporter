@@ -107,7 +107,7 @@ class util:
 					else:
 						course["title"] = ""
 					course["start_time"] = int(cur_time + 8)
-					course["end_time"] = course["start_time"] + course["credit"]
+					course["end_time"] = course["start_time"] + classtime
 					if(aux[j].has_attr('bgcolor') and aux[j]["bgcolor"] != "#C0D0FF"):
 						course["duplicate"] = True
 					else:
