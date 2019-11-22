@@ -134,7 +134,7 @@ def schedule():
 				else:
 					res = jsonify({"status":False})
 					return res
-				res = jsonify({"status":False,"data":time_table})
+				res = jsonify({"status":True,"data":time_table})
 				return res
 			else:
 				return jsonify({"status":False}), 400
