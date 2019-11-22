@@ -23,6 +23,11 @@ class Building:
 	def getAll(self):
 		r = requests.get("https://reg.buu.ac.th/registrar/room_time.asp",cookies=self._cookie)
 		soup = BeautifulSoup(r.text, 'lxml')
+		banner = soup.find("a", attrs={"href": "http://www.vn.co.th"}).find("img").get("src")
+		if("eng" not in banner):
+			self._cookie = self._getData()
+			r = requests.get("https://reg.buu.ac.th/registrar/room_time.asp",cookies=self._cookie)
+			soup = BeautifulSoup(r.text, 'lxml')
 		item = soup.findAll("table")[4]
 		building = {}
 		campus = ""
@@ -61,6 +66,12 @@ class Room:
 		r = requests.get("https://reg.buu.ac.th/registrar/room_time.asp?f_cmd=1&campusid={}&bc={}"
 				.format(campusid, buildingCode.upper()),cookies=self._cookie)
 		soup = BeautifulSoup(r.text, 'lxml')
+		banner = soup.find("a", attrs={"href": "http://www.vn.co.th"}).find("img").get("src")
+		if("eng" not in banner):
+			self._cookie = self._getData()
+			r = requests.get("https://reg.buu.ac.th/registrar/room_time.asp?f_cmd=1&campusid={}&bc={}"
+				.format(campusid, buildingCode.upper()),cookies=self._cookie)
+			soup = BeautifulSoup(r.text, 'lxml')
 		item = soup.find("select", attrs={"name": "roomid"})
 		room = []
 		for i in item:
@@ -76,6 +87,11 @@ class Room:
 		}
 		r = requests.post("https://reg.buu.ac.th/registrar/room_time.asp", data = Postdata, cookies=self._cookie)
 		soup = BeautifulSoup(r.text, 'lxml')
+		banner = soup.find("a", attrs={"href": "http://www.vn.co.th"}).find("img").get("src")
+		if("eng" not in banner):
+			self._cookie = self._getData()
+			r = requests.post("https://reg.buu.ac.th/registrar/room_time.asp", data = Postdata, cookies=self._cookie)
+			soup = BeautifulSoup(r.text, 'lxml')
 		item = soup.findAll("table")[5]
 		results = util.tableParse(item)
 		return results
