@@ -1,8 +1,11 @@
 from flask import Blueprint, jsonify, session, request, redirect, url_for, render_template
-import node
-import datetime, time
+import requests,json
+import urllib.parse
+import node, user
+import datetime, time, pytz
 
 app = Blueprint('NODE', __name__)
+tz = pytz.timezone('Asia/Bangkok')
 
 @app.route('/register')
 def register():	
@@ -31,7 +34,7 @@ def delete():
 		return redirect(url_for('settings'))
 
 @app.route('/room-report')
-def room_report():	
+def room_report():
 	try:
 		id = request.args.get("id")
 		message = request.args.get("message")
@@ -41,7 +44,11 @@ def room_report():
 			return jsonify({"status":False,"error":"id should not be null"}), 400
 		if(message is None):
 			return jsonify({"status":False,"error":"message should not be null"}), 400
+		thisNode = node.getNode(id)
 		if node.room_report(id,message):
+			admin = user.getAdmin()
+			for i in admin:
+				line_text("\nRoom: "+thisNode[4]+"\nMessage: "+message,i[3])
 			return jsonify({"status":True})
 		else:
 			return jsonify({"status":False})
@@ -117,8 +124,8 @@ def schedule():
 			return jsonify({"status":False,"error":"room should not be null"}), 400		
 		if raw:
 			day = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
-			day = day[datetime.datetime.now().weekday()]
-			hour = datetime.datetime.now().hour
+			day = day[datetime.datetime.now(tz).weekday()]
+			hour = datetime.datetime.now(tz).hour
 			if(day in raw.keys()):
 				schedule = raw[day]
 				index = -1
@@ -142,3 +149,12 @@ def schedule():
 			return jsonify({"status":False}), 500
 	except Exception as e:
 		return jsonify({"error": str(e)}), 500
+		
+def line_text(message,token):	
+	try:
+		msg = urllib.parse.urlencode({"message":message})
+		LINE_HEADERS = {'Content-Type':'application/x-www-form-urlencoded',"Authorization":"Bearer "+token}
+		session = requests.Session()
+		a=session.post("https://notify-api.line.me/api/notify" , headers=LINE_HEADERS, data=msg)
+	except Exception as e:
+		print(e)

@@ -37,9 +37,10 @@ def config():
 			campus = request.args.get("campus")
 			building = request.args.get("building")
 			room = request.args.get("room")
-			if(id is None or campus is None or building is None or room is None):
+			roomName = request.args.get("name")
+			if(id is None or campus is None or building is None or room is None or roomName is None):
 				return redirect(url_for('settings'))
-			node.updateConfig(id, campus, building, room)
+			node.updateConfig(id, campus, building, room, roomName)
 			return redirect(url_for('settings'))
 		else:
 			return redirect(url_for('index'))
@@ -65,7 +66,27 @@ def permission():
 			return redirect(url_for('index'))
 	except Exception:
 		return redirect(url_for('index'))
-
+		
+@app.route('/token')
+def token():
+	try:
+		if 'username' in session and session['permission'] == 1:
+			sess_user = user.getUser(session["username"])
+			if(not sess_user or (sess_user and sess_user[2] != session['permission'])):
+				session.pop('username', None)
+				session.pop('permission', None)
+				return redirect(url_for('AUTH.login'))
+			username = request.args.get("username")
+			token = request.args.get("token")
+			if(username is None or token is None):
+				return redirect(url_for('settings'))
+			user.setLineToken(username, token)
+			return redirect(url_for('settings'))
+		else:
+			return redirect(url_for('index'))
+	except Exception:
+		return redirect(url_for('index'))
+		
 @app.route('/delete')
 def delete():
 	try:

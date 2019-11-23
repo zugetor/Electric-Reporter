@@ -17,12 +17,12 @@ def register(id):
 			completion = True
 	return completion
 
-def updateConfig(id,campus,building,room):
+def updateConfig(id,campus,building,room, name):
 	con = sqlite3.connect(DATABASE)
 	completion = False
 	with con:
 		cur = con.cursor()
-		cur.execute("UPDATE config SET campus = ? , building = ? , room = ? WHERE nodeId = ?",(campus,building,room,id))
+		cur.execute("UPDATE config SET campus = ? , building = ? , room = ? , name = ? WHERE nodeId = ?",(campus,building,room,name,id))
 		con.commit()
 		completion = True
 	return completion
@@ -70,9 +70,10 @@ def room_report(id,message):
 	completion = False
 	with con:
 		cur = con.cursor()
-		if(getNode(id) is not None):
+		node = getNode(id)
+		if(node is not None):
 			cur = con.cursor()
-			cur.execute("INSERT INTO report VALUES(?,?,?)",(id,message,int(time())))
+			cur.execute("INSERT INTO report VALUES(?,?,?,?)",(id,node[4],message,int(time())))
 			con.commit()
 			completion = True
 	return completion
