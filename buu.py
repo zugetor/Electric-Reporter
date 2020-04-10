@@ -59,7 +59,7 @@ class Room:
 			for i in item:
 				if(i.name == None):
 					val = i.string.strip()
-					if(len(val) < 4 and val != "/" and len(val) > 0):
+					if(val.isdigit()):						
 						return cookie, val  
 
 	def getAll(self, campusid, buildingCode):

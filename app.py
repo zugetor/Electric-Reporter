@@ -48,7 +48,7 @@ def close_connection(exception):
 def index():
 	if 'username' in session:
 		sess_user = user.getUser(session["username"])
-		if(not sess_user or (sess_user and sess_user[2] != session['permission'])):
+		if(not sess_user or (sess_user and len(session.keys()) == 4 and sess_user[2] != session['permission'])):
 			session.pop('username', None)
 			session.pop('permission', None)
 			return redirect(url_for('AUTH.login'))
